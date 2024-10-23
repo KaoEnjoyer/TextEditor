@@ -1,0 +1,4 @@
+all: hello
+
+hello: main.cpp
+	g++ -lncurses main -o main.cpp
