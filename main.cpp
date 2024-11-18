@@ -3,157 +3,166 @@
 #include <signal.h>
 #include <vector>
 #include <string>
+#include "bottom_menu.h"
+#include "editor.h"
+#include <iostream>
+//signals
 static void finish(int sig);
 
+
+//defines
 #define LEFT 0,-1
 #define RIGHT 0,1
 #define DOWN -1,0
 #define UP 1,0
 
-#define RETURN_TO_NORMAL_MODE() return;
-#define MOVE() move(*y_pos , *x_pos)
+//MACROS
+//how to compile (i think so )
+//g++ -Wall main.cpp editor.cpp bottom_menu.cpp -o rel -lncurses 
 
 
-// void INIT_TEXT_ARRAY(int col , int len){
-	
-// }
+//TO DO:
+/*
+windows selection
 
-// void MOVE(int *x_pos , int *y_pos, int delta_x , int delta_y){
+IMPUT MODE 
+MAKE FILE
 
-// }
 
-
-//repair input handeling 
-//
-void INPUT_MODE(int *x_pos , int *y_pos , WINDOW* win , std::vector<std::string>&text_array){
-	int c ;
-	while(1){
-		c = getch();
-		switch (c)
-		{
-		case 27:
-			c = getchar();
-			printw("WYCHODZIMY!!");
-			if(c == -1){
-				RETURN_TO_NORMAL_MODE();
-			}
-			break;
-		case KEY_BACKSPACE:
-			text_array[*y_pos][*x_pos] = ' ';
-			x_pos--;
-			MOVE();
-			printw("USUWAMY!!");
-
-		case '!':
-			return;
-			break;
-		break;
-		default:
-			break;
-		}
-		refresh();
+*/
+void print_int(int a){
+	char ch;
+	while(a){
+		ch = (a%10) + '0';
+		a = a /10;
+		addch(ch);
 	}
 
 }
 
-void NORMAL_MODE(WINDOW* win ,  std::vector<std::string>& text_array){
-		int x = 0, y = 0 ;
-		int *x_pos , *y_pos ;
-		x_pos = &x;
-		y_pos = &y;
-		int row , col;
-		getmaxyx(win , row , col);
-		refresh();
-		int c = getch();
+void render_editor(const editor& ed){
+	move(0,0);
+	int i = 0 ;
+	for(auto el : ed.text){
+		for(auto txt : el){
+			addch(txt);
+		}
+		move(0 , ++i);
+	}
+refresh();
+}	
 
-		
+void update_cursor(editor & ed){
 
-			noecho();
-			while(true){
-			c = getch();
-			switch (c)
-			{
-			case 'h':
-				if (*x_pos <= -1)
-					break;
-				x_pos--;
-				MOVE();
-				break;
-			case 'j':
-				if (*y_pos <= 0)
-					break;
-				y_pos--;
-				MOVE();
-				break;
-			case 'k':
-				y_pos++;
-				MOVE();
-				break;
-			case 'l':
-				x_pos++;
-				MOVE();
-				break;
+	if(LINES < ed.get_x() || COLS < ed.get_y()){
+		finish(-39);
+	}	
+	move(ed.get_y() , ed.get_x());
+}
 
-			case 'I':
-				echo();
-				INPUT_MODE(x_pos , y_pos , win ,text_array);
-				break;
+void deb(editor & ed){
+	char b = ed.get_x();
+	addch('x');print_int(b);
+
+	 b = ed.get_y() - '0';
+	addch('y');print_int(b);
+}
+
+void input_mode(editor & ed){
+	int ch = getch();
+	while(true){
+		ch = getch();
+		switch(ch){
+			case ERR:
+			break;
+			case 27:
+				return;
+			break;
+			case KEY_ENTER:
+			deb(ed); 
+			ed.create_new_line();
+			break;
+			case KEY_LEFT:
+				ed.move(0 , -1);
+			deb(ed); 
+			break;
+			case KEY_RIGHT:
+				ed.move(0 , 1);
+			deb(ed); 
+			break;
+
+			case KEY_UP:
+				ed.move(1 , 0);
+			deb(ed); 
+			break;
+
+			case KEY_DOWN:
+				ed.move(-1 , 0);
+			deb(ed); 
+			break;
+
+
 			default:
-				break;
-			}
-
-			if (c == (int)'~')
-			{
-				finish(0);
-			}
-			}
-		
-		if (c == (int)'~')
-		{
-			finish(0);
+			//ed.add_a_letter(ch);
+			std::string t;
+			t.push_back(ch);
+			ed.add_string(t);
+			render_editor(ed);	
+			break;
 		}
 
 	}
+	std::cout << "DOBRA ESCAPE DZIAŁA" << std::endl; 	 
+}
 
+void normal_mode(editor& ed){ int ch = getch();
+	
+	std::vector<std::string>tab;
+	switch (ch)
+	{
+	case 'q':
+		finish(-1);
+		break;
+	case 'I':
+		input_mode(ed);
+		break;
+	case 'T':
+	print_int(222);	
+		break;
+	default:
+		break;
+	}
 
-
+}
 
 
 int main()
 {
-	std::vector<std::string>text_array;
-
-	//init 
 	(void)signal(SIGINT, finish);
 	(void)initscr();
 	keypad(stdscr, true);
 	(void)nonl();
 	(void)raw();
-	(void)echo();
+	(void)noecho();
+	notimeout(stdscr , TRUE);
+	(void)nodelay(stdscr , TRUE);
+	editor* main_editor;
+	main_editor = new editor();
+	bottom_menu* bot_menu = new bottom_menu();
 
-	// if (has_colors())
-	// {
-	// 	start_color();
-	// 	init_pair(1, COLOR_RED, COLOR_BLACK);
-	// 	init_pair(2, COLOR_GREEN, COLOR_BLACK);
-	// 	init_pair(3, COLOR_MAGENTA, COLOR_BLACK);
-	// 	init_pair(4, COLOR_CYAN, COLOR_BLACK);
-	// 	init_pair(5, COLOR_BLUE, COLOR_BLACK);
-	// 	init_pair(6, COLOR_YELLOW, COLOR_BLACK);
-	// 	init_pair(7, COLOR_WHITE, COLOR_BLACK);
-	// }
-	
-	
-	for (;;)
-	{
-		NORMAL_MODE(stdscr , text_array);
-	finish(0);
+
+	while(true){
+		normal_mode(*main_editor);
+		refresh();
 	}
+
 }  
+
+
 
 static void finish(int sig)
 {
 	endwin();
-	printf("wwwww");
+	printf("%d" , sig);
 	exit(0);
 }
