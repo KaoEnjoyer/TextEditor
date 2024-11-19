@@ -41,12 +41,14 @@ void print_int(int a){
 
 void render_editor(const editor& ed){
 	move(0,0);
-	int i = 0 ;
-	for(auto el : ed.text){
-		for(auto txt : el){
-			addch(txt);
+	int y = 0 ;
+	for(auto it = ed.text.begin(); it != ed.text.end() ; it++){
+		y++;
+		for(int i = 0 ; i < (*it).size(); i++){
+			addch((*it)[i]);
 		}
-		move(0 , ++i);
+		wmove(stdscr , y,0);
+		// addch('\n');
 	}
 refresh();
 }	
@@ -56,11 +58,12 @@ void update_cursor(editor & ed){
 		finish(-39);
 	}	
 	wmove(stdscr, ed.get_y() , ed.get_x());
+    ed.bot_menu.update(ed.current_mode ,ed.get_y() ,ed.get_x());
 }
 
 void input_mode(editor & ed){
 	ed.change_mode(mode::Insert);
-	int ch = getch();
+	int ch;
 	while(true){
 		update_cursor(ed);
 		ch = getch();
@@ -70,7 +73,7 @@ void input_mode(editor & ed){
 			case 27:
 				return;
 			break;
-			case 10:
+			case 13:
 			ed.create_new_line();
 			break;
 			case KEY_LEFT:
@@ -83,22 +86,29 @@ void input_mode(editor & ed){
 			case KEY_UP:
 				ed.move(-1 , 0);
 			break;
-
 			case KEY_DOWN:
 				ed.move(1 , 0);
 			break;
-			default:
-			std::string t;
-			t.push_back(ch);
-			ed.add_string(t);
+			case 127:
+			case KEY_BACKSPACE:
+				ed.replace_letter(' ');
+				ed.move(0,-1);
 			render_editor(ed);	
+
 			break;
+			default:
+			ed.add_a_letter(ch);
+			render_editor(ed);	
+
+			break;
+
 		}
 
 	}
 }
 
-void normal_mode(editor& ed){ int ch = getch();
+void normal_mode(editor& ed){ 
+	int ch = getch();
 	ed.change_mode(mode::Normal);
 	std::vector<std::string>tab;
 	switch (ch)
@@ -113,7 +123,10 @@ void normal_mode(editor& ed){ int ch = getch();
 	print_int(222);	
 		break;
 	default:
-		break;
+	if(ch != -1)
+	std::cout << ch;
+		// print_int(ch);
+		 break;
 	}
 
 }

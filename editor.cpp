@@ -10,15 +10,17 @@ editor::editor(){
 void editor::create_new_line(){
     std::string t = "";
     text.push_back(t);
-    y++;
-    move(1 , 0);
-    
+    move(1 , 0);    
+    x = 0;
+}
+
+void editor::replace_letter(const char & ch){
+    text[y][x] = ch;
 }
 
 void editor::move(size_t y , size_t x){
     this->x += x;
     this->y += y;
-    bot_menu.update(current_mode ,y ,x);
 }
 
 void editor::add_string(const std::string &str){

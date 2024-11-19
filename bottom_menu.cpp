@@ -9,11 +9,23 @@ bottom_menu::bottom_menu(){
 
 static void print_int(WINDOW* w , int a){
 	char ch;
+    int size = 0;
+    int b = a;
+    if(a == 0){
+        waddch(w , '0');
+        return;
+    }
 	while(a){
-		ch = (a%10) + '0';
 		a = a/10;
-		waddch(w, ch);
+        size++;
 	}
+    a = b ;
+    char str[size];
+    for(int i = size-1 ; i >= 0 ; i--){
+        str[i] = (char)((a%10) + '0'); 
+		a = a/10;
+    }
+    waddstr(w , str);
 }
 
 void bottom_menu::print(const mode& m , int ln , int col){
