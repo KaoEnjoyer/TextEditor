@@ -3,7 +3,6 @@
 #include <signal.h>
 #include <vector>
 #include <string>
-#include "bottom_menu.h"
 #include "editor.h"
 #include <iostream>
 //signals
@@ -53,24 +52,17 @@ refresh();
 }	
 
 void update_cursor(editor & ed){
-
-	if(LINES < ed.get_x() || COLS < ed.get_y()){
+	if(COLS < ed.get_x() || LINES < ed.get_y()){
 		finish(-39);
 	}	
-	move(ed.get_y() , ed.get_x());
-}
-
-void deb(editor & ed){
-	char b = ed.get_x();
-	addch('x');print_int(b);
-
-	 b = ed.get_y() - '0';
-	addch('y');print_int(b);
+	wmove(stdscr, ed.get_y() , ed.get_x());
 }
 
 void input_mode(editor & ed){
+	ed.change_mode(mode::Insert);
 	int ch = getch();
 	while(true){
+		update_cursor(ed);
 		ch = getch();
 		switch(ch){
 			case ERR:
@@ -78,32 +70,24 @@ void input_mode(editor & ed){
 			case 27:
 				return;
 			break;
-			case KEY_ENTER:
-			deb(ed); 
+			case 10:
 			ed.create_new_line();
 			break;
 			case KEY_LEFT:
 				ed.move(0 , -1);
-			deb(ed); 
 			break;
 			case KEY_RIGHT:
 				ed.move(0 , 1);
-			deb(ed); 
 			break;
 
 			case KEY_UP:
-				ed.move(1 , 0);
-			deb(ed); 
+				ed.move(-1 , 0);
 			break;
 
 			case KEY_DOWN:
-				ed.move(-1 , 0);
-			deb(ed); 
+				ed.move(1 , 0);
 			break;
-
-
 			default:
-			//ed.add_a_letter(ch);
 			std::string t;
 			t.push_back(ch);
 			ed.add_string(t);
@@ -112,11 +96,10 @@ void input_mode(editor & ed){
 		}
 
 	}
-	std::cout << "DOBRA ESCAPE DZIAŁA" << std::endl; 	 
 }
 
 void normal_mode(editor& ed){ int ch = getch();
-	
+	ed.change_mode(mode::Normal);
 	std::vector<std::string>tab;
 	switch (ch)
 	{
@@ -136,8 +119,8 @@ void normal_mode(editor& ed){ int ch = getch();
 }
 
 
-int main()
-{
+
+void init(){
 	(void)signal(SIGINT, finish);
 	(void)initscr();
 	keypad(stdscr, true);
@@ -146,16 +129,18 @@ int main()
 	(void)noecho();
 	notimeout(stdscr , TRUE);
 	(void)nodelay(stdscr , TRUE);
-	editor* main_editor;
-	main_editor = new editor();
+}
+
+int main()
+{
+	init();
+	editor* main_editor = new editor();
 	bottom_menu* bot_menu = new bottom_menu();
 
-
+	//main loop
 	while(true){
 		normal_mode(*main_editor);
-		refresh();
 	}
-
 }  
 
 

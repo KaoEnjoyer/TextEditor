@@ -1,17 +1,16 @@
 #include <curses.h>
+enum mode{
+            Insert,
+            Normal
+        };
 
 class bottom_menu{
     WINDOW* canva;
     size_t height;
     size_t length;
+    void print(const mode& m , int ln , int col);
     public:
-    enum mode{
-        Insert,
-        Normal
-    };
-    mode current_mode;
     bottom_menu();
-    void change_mode(mode m);
-    void update();
+    void update(const mode& m , int ln , int col);
 };
 
