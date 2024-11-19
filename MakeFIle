@@ -1,0 +1,4 @@
+clean: hello
+
+hello: main.cpp
+	g++ -Wall main.cpp editor.cpp -o TXT -lncurses
