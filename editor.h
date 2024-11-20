@@ -4,6 +4,12 @@
 #include "bottom_menu.h"
 
 
+constexpr size_t _LINE_BASE_SIZE = (2<<8);
+
+struct line{
+    char str[_LINE_BASE_SIZE];
+};
+
 class editor{
     public:
         editor();

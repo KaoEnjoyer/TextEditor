@@ -21,6 +21,7 @@ void editor::replace_letter(const char & ch){
 void editor::move(size_t y , size_t x){
     this->x += x;
     this->y += y;
+    this->bot_menu.update(current_mode , this->y , this->x);
 }
 
 void editor::add_string(const std::string &str){

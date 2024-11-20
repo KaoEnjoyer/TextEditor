@@ -8,6 +8,7 @@ bottom_menu::bottom_menu(){
 }
 
 static void print_int(WINDOW* w , int a){
+    curs_set(0);
 	char ch;
     int size = 0;
     int b = a;
@@ -20,12 +21,18 @@ static void print_int(WINDOW* w , int a){
         size++;
 	}
     a = b ;
-    char str[size];
+    char str[] = "        ";
     for(int i = size-1 ; i >= 0 ; i--){
+        if(a <= 0){
+        str[i] = 0;
+        }else{
         str[i] = (char)((a%10) + '0'); 
 		a = a/10;
+        }
     }
     waddstr(w , str);
+    curs_set(1);
+
 }
 
 void bottom_menu::print(const mode& m , int ln , int col){

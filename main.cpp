@@ -22,9 +22,11 @@ static void finish(int sig);
 
 //TO DO:
 /*
-windows selection
+ zamień vector na array<strcut linia>
+ struct line {char[] , int x last positio}
 
-IMPUT MODE 
+ render editor -> render changed line
+ wwwwww
 MAKE FILE
 
 
@@ -39,7 +41,17 @@ void print_int(int a){
 
 }
 
-void render_editor(const editor& ed){
+void update_cursor(editor & ed){
+	if(COLS < ed.get_x() || LINES < ed.get_y()){
+		finish(-39);
+	}	
+	wmove(stdscr, ed.get_y() , ed.get_x());
+}
+
+
+
+void render_editor(editor& ed){
+	curs_set(0);
 	move(0,0);
 	int y = 0 ;
 	for(auto it = ed.text.begin(); it != ed.text.end() ; it++){
@@ -48,18 +60,12 @@ void render_editor(const editor& ed){
 			addch((*it)[i]);
 		}
 		wmove(stdscr , y,0);
-		// addch('\n');
 	}
+	update_cursor(ed);
+	curs_set(1);
 refresh();
 }	
 
-void update_cursor(editor & ed){
-	if(COLS < ed.get_x() || LINES < ed.get_y()){
-		finish(-39);
-	}	
-	wmove(stdscr, ed.get_y() , ed.get_x());
-    ed.bot_menu.update(ed.current_mode ,ed.get_y() ,ed.get_x());
-}
 
 void input_mode(editor & ed){
 	ed.change_mode(mode::Insert);
@@ -98,8 +104,7 @@ void input_mode(editor & ed){
 			break;
 			default:
 			ed.add_a_letter(ch);
-			render_editor(ed);	
-
+			render_editor(ed);
 			break;
 
 		}
