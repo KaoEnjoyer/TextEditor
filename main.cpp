@@ -23,13 +23,11 @@ static void finish(int sig);
 //TO DO:
 /*
  zamień vector na array<strcut linia>
- struct line {char[] , int x last positio}
+ struct line {char[] , int x last positio} //done teraz trylko przaepisac metody 
 
  render editor -> render changed line
  wwwwww
 MAKE FILE
-
-
 */
 void print_int(int a){
 	char ch;
@@ -45,7 +43,7 @@ void update_cursor(editor & ed){
 	if(COLS < ed.get_x() || LINES < ed.get_y()){
 		finish(-39);
 	}	
-	wmove(stdscr, ed.get_y() , ed.get_x());
+	wmove(stdscr, ed.get_y() , ed.get_x()); 
 }
 
 
@@ -54,10 +52,10 @@ void render_editor(editor& ed){
 	curs_set(0);
 	move(0,0);
 	int y = 0 ;
-	for(auto it = ed.text.begin(); it != ed.text.end() ; it++){
+	for(auto it = ed.text_container.begin(); it != ed.text_container.end() ; it++){
 		y++;
-		for(int i = 0 ; i < (*it).size(); i++){
-			addch((*it)[i]);
+		for(int i  = 0 ; it->last_x > i; i++){
+			waddch(stdscr , it->str[i]);
 		}
 		wmove(stdscr , y,0);
 	}
@@ -79,7 +77,7 @@ void input_mode(editor & ed){
 			case 27:
 				return;
 			break;
-			case 13:
+			case 13: //to jest enter
 			ed.create_new_line();
 			break;
 			case KEY_LEFT:
@@ -97,10 +95,9 @@ void input_mode(editor & ed){
 			break;
 			case 127:
 			case KEY_BACKSPACE:
-				ed.replace_letter(' ');
 				ed.move(0,-1);
-			render_editor(ed);	
-
+				ed.replace_letter(' ');
+				render_editor(ed);	
 			break;
 			default:
 			ed.add_a_letter(ch);
