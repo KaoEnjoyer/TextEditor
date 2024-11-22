@@ -97,11 +97,11 @@ void input_mode(editor & ed){
 			case KEY_BACKSPACE:
 				ed.move(0,-1);
 				ed.replace_letter(' ');
-				render_editor(ed);	
+			//	render_editor(ed);	
 			break;
 			default:
 			ed.add_a_letter(ch);
-			render_editor(ed);
+		//	render_editor(ed);
 			break;
 
 		}
@@ -149,7 +149,7 @@ void init(){
 int main()
 {
 	init();
-	editor* main_editor = new editor();
+	editor* main_editor = new editor(stdscr);
 	bottom_menu* bot_menu = new bottom_menu();
 
 	//main loop

@@ -18,7 +18,7 @@ struct line{
 
 class editor{
     public:
-        editor();
+        editor(WINDOW * win);
         void add_a_letter(char ch);
         void create_new_line();
         void delate_letter();
@@ -27,12 +27,14 @@ class editor{
         void change_mode(const mode& m );
         void delate_line();
         void replace_letter(const char &ch);
+        void render_current_line(WINDOW * win);
         bottom_menu bot_menu;
 
             
         void set_x(const size_t &x);
         void set_y(const size_t &y);
 
+        WINDOW * win;
         const size_t& get_x();
         const size_t& get_y();
         std::array<line, _LINE_BASE_SIZE>text_container;
