@@ -7,35 +7,8 @@ bottom_menu::bottom_menu(){
     update(mode::Normal , 0 , 0);
 }
 
-static void print_int(WINDOW* w , int a){
-    curs_set(0);
-	char ch;
-    int size = 0;
-    int b = a;
-    if(a == 0){
-        waddch(w , '0');
-        return;
-    }
-	while(a){
-		a = a/10;
-        size++;
-	}
-    a = b ;
-    char str[] = "        ";
-    for(int i = size-1 ; i >= 0 ; i--){
-        if(a <= 0){
-        str[i] = 0;
-        }else{
-        str[i] = (char)((a%10) + '0'); 
-		a = a/10;
-        }
-    }
-    waddstr(w , str);
-    curs_set(1);
 
-}
-
-void bottom_menu::print(const mode& m , int ln , int col){
+void bottom_menu::print(const mode& m , int ln , int col ){
     wclear(canva);
     switch(m){
         case Normal:
@@ -45,10 +18,7 @@ void bottom_menu::print(const mode& m , int ln , int col){
         waddstr(canva, "insert_mode");
         break;
     }
-    waddstr(canva, "     Ln ");
-    print_int(canva , ln );
-    waddstr(canva, ", Col ");
-    print_int(canva , col );
+    wprintw(canva , "   Ln: %d, Col: %d " , ln , col );
     // kocham piwo
 }
 
