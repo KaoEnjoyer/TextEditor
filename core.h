@@ -1,4 +1,5 @@
 #include "editor.h"
+#include "bottom_menu.h"
 
 static void finish(int sig);
 

@@ -1,7 +1,7 @@
 #include "editor.h"
 
 editor::editor(){
-    this->current_mode = mode::Normal;
+    //this->current_mode = mode::Normal;
     this->x = 0;
     this->y = 0;
     this->lines = _LINE_BASE_SIZE;
@@ -10,7 +10,7 @@ editor::editor(){
 
 
 editor::editor(size_t len){
-    this->current_mode = mode::Normal;
+    //this->current_mode = mode::Normal;
     this->x = 0;
     this->y = 0;
     this->lines = len;
@@ -35,7 +35,6 @@ line::line(size_t const& size){
     str = new char[size]();
     this->size = size;
     for(int i = 0 ; i < this->size; i++)str[i]=' ';
-
 }
 
 void line::resize(size_t const & n){
@@ -67,7 +66,6 @@ void editor::move(size_t y , size_t x){
     if(!is_in_window(this->y ,this->x )){
     this->x -= x;
     this->y -= y;
-        
     }
     this->bot_menu.update(current_mode , this->y , this->x);
 }
@@ -99,10 +97,7 @@ void editor::add_a_letter(char ch){
     //abMcd
 }
 
-void editor::change_mode(const mode& m){
-    this->current_mode = m;
-    bot_menu.update(m ,y ,x);
-}
+
 
 void editor::set_x(const size_t & x){
     this->x=x;
@@ -123,7 +118,7 @@ void editor::delate_letter(){
         }
     }
     move(0,-1);
-    //abcd
+    //abcd();
 }
 
 const size_t& editor::get_x(){

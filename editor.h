@@ -1,7 +1,7 @@
 
 #include <array>
+#include <vector>
 #include <string>
-#include "bottom_menu.h"
 
 
 const size_t _LINE_BASE_SIZE = (2<<8);

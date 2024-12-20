@@ -1,6 +1,13 @@
 #include "core.h"
 
-#define _MY_ENTER_KEY 13
+
+// 1) handling input
+
+// KEYS
+
+#define CONST_KEY_ENTER 13
+#define CONST_KEY_BACKSPACE 127
+#define CONST_KEY_ESC 27
 
 void update_cursor(editor &ed)
 {
@@ -40,31 +47,29 @@ void input_mode(editor &ed)
 		ch = getch();
 		switch (ch)
 		{
-		case ERR:
-			break;
-		case 27:
-			return;
-			break;
-		case _MY_ENTER_KEY: // to jest enter
-			ed.create_new_line();
-			break;
 		case KEY_LEFT:
 			ed.move(0, -1);
 			break;
 		case KEY_RIGHT:
 			ed.move(0, 1);
 			break;
-
 		case KEY_UP:
 			ed.move(-1, 0);
 			break;
 		case KEY_DOWN:
 			ed.move(1, 0);
 			break;
-		case 127:
+		case ERR:
+			break;
+		case CONST_KEY_ESC:
+			return;
+			break;
+		case CONST_KEY_ENTER:
+			ed.create_new_line();
+			break;
+		case CONST_KEY_BACKSPACE:
 		case KEY_BACKSPACE:
 			ed.delate_letter();
-
 			render_editor(ed);
 			break;
 		default:
@@ -81,7 +86,7 @@ void normal_mode(editor &ed)
 	std::vector<std::string> tab;
 	while (true)
 	{
-	int ch = getch();
+		int ch = getch();
 		switch (ch)
 		{
 		case 'q':
@@ -102,19 +107,20 @@ void normal_mode(editor &ed)
 	}
 }
 
-void handle_commands(editor & ed){
-	char* buff = new char[256];
-	int i = 0;
-	char ch;
-	while(ch = getch()){
-		if(ch == _MY_ENTER_KEY){
-			break;
-		}
-		buff[i++] = ch;
-	}
-	if(buff == "w"){
-		finish(-69);
-	}
+void handle_commands(editor &ed)
+{
+	// char* buff = new char[256];
+	// int i = 0;
+	// char ch;
+	// while(ch = getch()){
+	// 	if(ch == _MY_ENTER_KEY){
+	// 		break;
+	// 	}
+	// 	buff[i++] = ch;
+	// }
+	// if(buff == "w"){
+	// 	finish(-69);
+	// }
 }
 
 static void finish(int sig)
